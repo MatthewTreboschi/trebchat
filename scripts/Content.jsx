@@ -6,35 +6,35 @@ import { Button } from './Button';
 import { Socket } from './Socket';
 
 export function Content() {
-    const [addresses, setAddresses] = React.useState([]);
+    const [messages, setMessages] = React.useState([]);
     
-    function getNewAddresses() {
+    function getNewMessages() {
         React.useEffect(() => {
-            Socket.on('addresses received', (data) => {
-                setAddresses(data['allAddresses']);
-                console.log("Received addresses form server: " + data['allAddresses']);
+            Socket.on('messages received', (data) => {
+                setMessages(data['allMessages']);
+                console.log("Received messages form server: " + data['allMessages']);
             })
-            //Socket.on('addresses received', updateAddresses);
+            //Socket.on('messages received', updateMessages);
             //return () => {
-            //    Socket.off('addresses received', updateAddresses);
+            //    Socket.off('messages received', updateMessages);
             //}
         });
     }
     
-    function updateAddresses(data) {
-        console.log("Received addresses from server: " + data['allAddresses']);
-        setAddresses(data['allAddresses']);
+    function updateMessages(data) {
+        console.log("Received messages from server: " + data['allMessages']);
+        setMessages(data['allMessages']);
     }
     
-    getNewAddresses();
+    getNewMessages();
 
     return (
         <div>
-            <h1>USPS Addresses!</h1>
+            <h1>TrebChat Messages!</h1>
                 <dl>
                     {
-                        addresses.map(
-                        (address, index) => <dt key={index}>{address}</dt>)
+                        messages.map(
+                        (message, index) => <dt key={index}>{message}</dt>)
                     }
                 </dl>
             <Button />

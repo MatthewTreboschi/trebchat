@@ -7,7 +7,7 @@ import flask_sqlalchemy
 import flask_socketio
 import models 
 
-ADDRESSES_RECEIVED_CHANNEL = 'addresses received'
+MESSAGES_RECEIVED_CHANNEL = 'messages received'
 
 app = flask.Flask(__name__)
 
@@ -29,14 +29,14 @@ db.app = app
 db.create_all()
 db.session.commit()
 
-def emit_all_addresses(channel):
-    all_addresses = [ \
-        db_address.address for db_address in \
-        db.session.query(models.Usps).all()
+def emit_all_messages(channel):
+    all_messages = [ \
+        db_message.message for db_message in \
+        db.session.query(models.Trebchat).all()
     ]
     
     socketio.emit(channel, {
-        'allAddresses': all_addresses
+        'allMessages': all_messages
     })
 
 @socketio.on('connect')
@@ -46,25 +46,25 @@ def on_connect():
         'test': 'Connected'
     })
     
-    emit_all_addresses(ADDRESSES_RECEIVED_CHANNEL)
+    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
 
 @socketio.on('disconnect')
 def on_disconnect():
     print ('Someone disconnected!')
 
-@socketio.on('new address input')
-def on_new_address(data):
-    print("Got an event for new address input with data:", str(data["address"]))
+@socketio.on('new message input')
+def on_new_message(data):
+    print("Got an event for new message input with data:", str(data["message"]))
     
-    db.session.add(models.Usps(data["address"]));
+    db.session.add(models.Trebchat(data["message"]));
     db.session.commit();
     
-    emit_all_addresses(ADDRESSES_RECEIVED_CHANNEL)
+    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
 
 @app.route('/')
 def index():
-    emit_all_addresses(ADDRESSES_RECEIVED_CHANNEL)
+    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
 
     return flask.render_template("index.html")
 
