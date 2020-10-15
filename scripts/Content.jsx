@@ -2,7 +2,8 @@
 import * as React from 'react';
 
 
-import { Button } from './Button';
+import { Button,NameInput} from './Button';
+
 import { Socket } from './Socket';
 
 export function Content() {
@@ -30,14 +31,19 @@ export function Content() {
 
     return (
         <div>
-            <h1>TrebChat Messages!</h1>
-                <dl>
-                    {
-                        messages.map(
-                        (message, index) => <dt key={index}>{message}</dt>)
-                    }
-                </dl>
-            <Button />
+            <div>
+                <h1>TrebChat Messages!</h1>
+                <NameInput />
+            </div>
+            <div>
+                    <dl>
+                        {
+                            messages.map(
+                            (message, index) => <dt key={index}>{message}</dt>)
+                        }
+                    </dl>
+                <Button />
+            </div>
         </div>
     );
 }

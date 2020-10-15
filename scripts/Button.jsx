@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Socket } from './Socket';
 
-function handleSubmit(event) {
+function messageSubmit(event) {
     let newMessage = document.getElementById("message_input");
     Socket.emit('new message input', {
         'message': newMessage.value
@@ -14,9 +14,28 @@ function handleSubmit(event) {
 
 export function Button() {
     return (
-        <form onSubmit={handleSubmit}>
-            <input id="message_input" placeholder="Enter a TrebChat message"></input>
-            <button>Add to DB!</button>
+        <form onSubmit={messageSubmit}>
+            <input id="message_input" placeholder="Enter a Message:"></input>
+            <button>Send</button>
         </form>
     );
+}
+
+function nameSubmit(event) {
+    let newName = document.getElementById("name_input");
+    Socket.emit('new name input', {
+        'name': newName.value
+    });
+    console.log('Sent the message ' + newName.value + ' to server!');
+    newName.value = ''
+    
+    event.preventDefault();
+}
+
+export function NameInput() {
+    return (
+        <form onSubmit={nameSubmit}>
+            <input id="name_input" placeholder="Make a name!"></input>
+            <button>Choose</button>
+        </form>)
 }

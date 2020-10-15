@@ -41,6 +41,7 @@ def emit_all_messages(channel):
 
 @socketio.on('connect')
 def on_connect():
+    sid=flask.request.sid
     print('Someone connected!')
     socketio.emit('connected', {
         'test': 'Connected'
@@ -51,6 +52,7 @@ def on_connect():
 
 @socketio.on('disconnect')
 def on_disconnect():
+    sid=flask.request.sid
     print ('Someone disconnected!')
 
 @socketio.on('new message input')
@@ -61,7 +63,11 @@ def on_new_message(data):
     db.session.commit();
     
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-
+    
+@socketio.on('new message input')
+def on_new_name(data):
+    print("hello world!")
+    
 @app.route('/')
 def index():
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
