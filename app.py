@@ -5,7 +5,7 @@ import os
 import flask
 import flask_sqlalchemy
 import flask_socketio
-import models 
+import models
 
 MESSAGES_RECEIVED_CHANNEL = 'messages received'
 
@@ -35,38 +35,58 @@ def emit_all_messages(channel):
         db.session.query(models.Trebchat).all()
     ]
     
+    all_names = [ \
+        db_name.names for db_name in \
+        db.session.query(models.Trebchat).all()
+    ]
+    db.session.remove()
     socketio.emit(channel, {
-        'allMessages': all_messages
+        'allMessages': all_messages,
+        'allNames': all_names
     })
+
 
 @socketio.on('connect')
 def on_connect():
     sid=flask.request.sid
     print('Someone connected!')
+    db.session.add(models.activeusers(sid, "Anonymous"))
+    db.session.commit()
+    c = models.activeusers.query.filter_by().count()
     socketio.emit('connected', {
-        'test': 'Connected'
+        'connectCount': c
     })
     
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
-
 @socketio.on('disconnect')
 def on_disconnect():
     sid=flask.request.sid
     print ('Someone disconnected!')
-
+    user = db.session.query(models.activeusers).filter(models.activeusers.sid==sid).first()
+    db.session.delete(user)
+    db.session.commit()
+    db.session.remove()
+    
+    
+    
 @socketio.on('new message input')
 def on_new_message(data):
+    sid=flask.request.sid
     print("Got an event for new message input with data:", str(data["message"]))
-    
-    db.session.add(models.Trebchat(data["message"]));
+    user = db.session.query(models.activeusers).filter(models.activeusers.sid==sid).first()
+    db.session.add(models.Trebchat(data["message"], user.username));
     db.session.commit();
     
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
-@socketio.on('new message input')
+@socketio.on('new name input')
 def on_new_name(data):
-    print("hello world!")
+    sid = flask.request.sid
+    user = db.session.query(models.activeusers).filter(models.activeusers.sid==sid).first()
+    user.username = data["name"]
+    db.session.commit()
+    print(data["name"])
     
 @app.route('/')
 def index():

@@ -8,17 +8,19 @@ import { Socket } from './Socket';
 
 export function Content() {
     const [messages, setMessages] = React.useState([]);
+    const [names, setNames] = React.useState([]);
+    const [count, setCount] = React.useState([]);
     
     function getNewMessages() {
         React.useEffect(() => {
             Socket.on('messages received', (data) => {
                 setMessages(data['allMessages']);
+                setNames(data['allNames']);
                 console.log("Received messages form server: " + data['allMessages']);
             })
-            //Socket.on('messages received', updateMessages);
-            //return () => {
-            //    Socket.off('messages received', updateMessages);
-            //}
+            Socket.on('connected', (c) => {
+                setCount(c['connectCount']);
+            })
         });
     }
     
@@ -30,20 +32,33 @@ export function Content() {
     getNewMessages();
 
     return (
-        <div>
+        <div id="main">
             <div>
-                <h1>TrebChat Messages!</h1>
-                <NameInput />
+                <h1 id="logo">TrebChat Messages!</h1>
+                <h3>TrebChat Nation Population: { count }</h3>
+                <NameInput id="navig"/>
             </div>
             <div>
-                    <dl>
+                <table>
+                    <thead>
+                        <tr>
+                            <th id="namecol">username</th>
+                            <th id="messagecol">message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {
-                            messages.map(
-                            (message, index) => <dt key={index}>{message}</dt>)
+                        messages.map(
+                        (message, index) => 
+                        <tr key={index}>
+                            <td id="namecol">{names[index]}</td>
+                            <td>{message}</td>
+                        </tr>)
                         }
-                    </dl>
-                <Button />
+                    </tbody>
+                </table>
             </div>
+            <Button />
         </div>
     );
 }

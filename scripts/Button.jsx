@@ -15,7 +15,7 @@ function messageSubmit(event) {
 export function Button() {
     return (
         <form onSubmit={messageSubmit}>
-            <input id="message_input" placeholder="Enter a Message:"></input>
+            <input id="message_input" maxLength="120" placeholder="Enter a Message:"></input>
             <button>Send</button>
         </form>
     );
@@ -35,7 +35,7 @@ function nameSubmit(event) {
 export function NameInput() {
     return (
         <form onSubmit={nameSubmit}>
-            <input id="name_input" placeholder="Make a name!"></input>
-            <button>Choose</button>
+            <input id="name_input" maxLength="12" placeholder="Make a name!"></input>
+            <button>Change name!</button>
         </form>)
 }
