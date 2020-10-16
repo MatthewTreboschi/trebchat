@@ -6,10 +6,12 @@ import flask
 import flask_sqlalchemy
 import flask_socketio
 import models
+import bot
 
 MESSAGES_RECEIVED_CHANNEL = 'messages received'
 
 app = flask.Flask(__name__)
+mattbot = bot.mattbot()
 
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
@@ -56,6 +58,7 @@ def on_connect():
     socketio.emit('connected', {
         'connectCount': c
     })
+    db.session.remove()
     
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
@@ -66,8 +69,11 @@ def on_disconnect():
     user = db.session.query(models.activeusers).filter(models.activeusers.sid==sid).first()
     db.session.delete(user)
     db.session.commit()
+    c = models.activeusers.query.filter_by().count()
+    socketio.emit('connected', {
+        'connectCount': c
+    })
     db.session.remove()
-    
     
     
 @socketio.on('new message input')
@@ -76,6 +82,9 @@ def on_new_message(data):
     print("Got an event for new message input with data:", str(data["message"]))
     user = db.session.query(models.activeusers).filter(models.activeusers.sid==sid).first()
     db.session.add(models.Trebchat(data["message"], user.username));
+    if (str(data["message"])[0:2]=="!!"):
+        botsaid = mattbot.message(data["message"])
+        db.session.add(models.Trebchat(botsaid, "mattbot"))
     db.session.commit();
     
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
