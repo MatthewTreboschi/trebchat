@@ -35,7 +35,7 @@ export function Content() {
         <div id="main">
             <div>
                 <h1 id="logo">TrebChat Messages!</h1>
-                <h3>TrebChat Nation Population: { count }</h3>
+                <h3 id="pop">TrebChat Nation Population: { count }</h3>
                 <NameInput id="navig"/>
             </div>
             <div>
