@@ -13,7 +13,7 @@ Note: any step that is just `command here` is juest a line to run in terminal
 12. Copy your sql.env file into this new directoy
 13. Go to finnhub.io and click "Get free API key", then create a username, password and email and submit
 14. add this value to a new line of your sql.env file in the format
-## REPLACE THE [VALUES] IN THIS COMMAND WITH YOUR RESPECIVE FINNHUB API KEY
+ REPLACE THE [VALUES] IN THIS COMMAND WITH YOUR RESPECIVE FINNHUB API KEY
 `export STOCK_KEY = '[YOUR API KEY HERE]'`
 15. `sudo service postgresql start`
 16. `psql`
@@ -29,28 +29,39 @@ sid VARCHAR PRIMARY KEY,
 username VARCHAR);`
 # psql setup with python
 `sudo yum update`
+
 `sudo /usr/local/bin/pip install --upgrade pip`
+
 `sudo /usr/local/bin/pip install psycopg2-binary`
+
 `sudo /usr/local/bin/pip install Flask-SQLAlchemy==2.1`
+
 # setup psql
 `sudo yum install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docsgit clone https://github.com/NJIT-CS490/project2-m1-mt393`
     (answer yes to everything)
+    
 `sudo service postgresql initdb`
     (this will fail if you already have a db initialized, thats fine)
+    
 `sudo service postgresql start`
 `sudo -u postgres createuser --superuser $USER`
     Error "could not change directory" is fine, it still worked
+    
 `sudo -u postgres createdb $USER`
     Error "could not change directory" is fine, it still worked
+    
 `psql`
+
 `\du`
     look for ec2-user as a user
+    
 `\u`
     look for ec2-user as a database
-## REPLACE THE [VALUES] IN THIS COMMAND WITH A RESPECIVE SHORT USERNAME AND PASSWORD
+ REPLACE THE [VALUES] IN THIS COMMAND WITH A RESPECIVE SHORT USERNAME AND PASSWORD
 `create user [some_username_here] superuser password '[some_unique_new_password_here]';`
 make a new file called sql.env
-## REPLACE THE {VALUES} IN THIS COMMAND WITH A RESPECIVE SHORT USERNAME AND PASSWORD
+
+ REPLACE THE {VALUES} IN THIS COMMAND WITH A RESPECIVE SHORT USERNAME AND PASSWORD
 `export DATABASE_URL = postgresql://{USERNAME}:{PASSWORD}@localhost/postgres`
 
 # Enabling read/write from SQLAlchemy 
